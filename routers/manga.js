@@ -90,7 +90,7 @@ router.get("/manga/detail/:slug", async (req, res) => {
   $('#chapterlist > ul')
   .find('li')
   .each((index, el) => {
-    let chapter_title = $(el).find("div.eph-num > a").attr("chapternum").text()
+    let chapter_title = $(el).find("div.eph-num > a").text()
     let chapter_endpoint = $(el).find("div.eph-num > a").attr("href")
     if(chapter_endpoint !== undefined){
       const rep = chapter_endpoint.replace('https://westmanga.info/','')
