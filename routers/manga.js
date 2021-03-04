@@ -99,12 +99,9 @@ router.get("/manga/detail/:slug", async (req, res) => {
 
 //rekomendasi  -------Done------
 router.get("/recomended", async (req, res) => {
-  let url = 'https://westmanga.info/'
 
   try {
-    const response = await AxiosService(url);
-    console.log(url);
-    if (response.status === 200) {
+    const response = await AxiosService('https://westmanga.info/');
       const $ = cheerio.load(response.data);
       const element = $("div.hotslid");
       let manga_list = [];
@@ -125,16 +122,13 @@ router.get("/recomended", async (req, res) => {
           chapter,
         });
       });
+
       return res.status(200).json({
         status: true,
         message: "success",
         manga_list,
       });
-    }
-    return res.send({
-      message: response.status,
-      manga_list: [],
-    });
+      
   } catch (err) {
     res.send({
       status: false,
