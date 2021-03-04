@@ -97,7 +97,6 @@ router.get("/manga/detail/:slug", async (req, res) => {
         chapter.push({
           chapter_title,
           chapter_endpoint:rep,
-          chapter_link,
         }); 
       }
     });
