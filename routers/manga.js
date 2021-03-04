@@ -103,11 +103,11 @@ router.get("/recomended", async (req, res) => {
   try {
     const response = await AxiosService('https://westmanga.info/');
       const $ = cheerio.load(response.data);
-      const element = $("div.hotslid");
+      const element = $("#content");
       let manga_list = [];
       let title, chapter, rating, endpoint, thumb;
 
-      element.find("div.hotslid").each((idx, el) => {
+      element.find("div.listupd > div.bs").each((idx, el) => {
         title = $(el).find("div.bsx > a").attr("title").text().trim();
         endpoint = $(el).find("div.bsx > a").attr("href").replace(replaceMangaPage, "").replace('/manga/','');
         thumb = $(el).find("div.limit > img").find("img").attr("src");
@@ -128,7 +128,7 @@ router.get("/recomended", async (req, res) => {
         message: "success",
         manga_list,
       });
-      
+
   } catch (err) {
     res.send({
       status: false,
