@@ -87,6 +87,20 @@ router.get("/manga/detail/:slug", async (req, res) => {
   const getSinopsis = element.find("div.entry-content").first();
   obj.synopsis = $(getSinopsis).find("p").text().trim();
 
+  $('div.eplister')
+    .find("li").each((index, el) => {
+      let chapter_title = $(el).find("span.chapternum").text()
+      let chapter_endpoint = $(el).find("div.eph-num > a").attr("href")
+      if(chapter_endpoint !== undefined){
+        const rep = chapter_endpoint.replace('https://westmanga.info/','')
+        chapter.push({
+          chapter_title,
+          chapter_endpoint:rep,
+        }); 
+      }
+      obj.chapter = chapter;
+    });
+
   res.status(200).send(obj);
   } catch (error) {
     console.log(error);
@@ -96,46 +110,5 @@ router.get("/manga/detail/:slug", async (req, res) => {
     });
   }
 });
-
-//rekomendasi  -------Done------
-router.get("/recomended", async (req, res) => {
-
-  try {
-    const response = await AxiosService('https://westmanga.info/');
-      const $ = cheerio.load(response.data);
-      const element = $("div.listupd");
-      let manga_list = [];
-      let title, chapter, rating, endpoint, thumb;
-
-      element.find("div.bs").each((idx, el) => {
-        title = $(el).find("div.bsx > a").attr("title").text().trim();
-        endpoint = $(el).find("div.bsx > a").attr("href").replace(replaceMangaPage, "").replace('/manga/','');
-        thumb = $(el).find("div.limit > img").find("img").attr("src");
-        rating = $(el).find("div.numscore").text().trim();
-        chapter = $(el).find("div.epxs").text();
-        manga_list.push({
-          title,
-          thumb,
-          type,
-          rating,
-          endpoint,
-          chapter,
-        });
-      });
-
-      return res.status(200).json({
-        status: true,
-        message: "success",
-        manga_list,
-      });
-
-  } catch (err) {
-    res.send({
-      status: false,
-      message: err,
-      manga_list: [],
-    });
-  }
-})
 
 module.exports = router;
