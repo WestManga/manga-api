@@ -13,7 +13,7 @@ router.get("/:slug", async (req, res) => {
   const slug = req.params.slug;
   try {
     //response
-    const response = await AxiosService(`https://westmanga.com/manga/${slug}`);
+    const response = await AxiosService(`/${slug}`);
     const $ = cheerio.load(response.data);
     const content = $("div.postarea");
     let chapter_image = [];
@@ -22,7 +22,7 @@ router.get("/:slug", async (req, res) => {
 
     const getTitlePages = content.find("div.entry-title")
     getTitlePages.filter(() => {
-      obj.title = $(getTitlePages).find("h1").text().replace("Komik ", "");
+      obj.title = $(getTitlePages).find("h1").text();
     });
     // obj.download_link = link;
 
