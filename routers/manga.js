@@ -100,7 +100,7 @@ router.get("/manga/detail/:slug", async (req, res) => {
 //recommended ---done---
 router.get("/recommended", async (req, res) => {
   try {
-    const response = await AxiosService('other/hot/');
+    const response = await AxiosService('/');
 
     const $ = cheerio.load(response.data);
     const element = $("div.hotslid");
