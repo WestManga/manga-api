@@ -87,7 +87,9 @@ router.get("/manga/detail/:slug", async (req, res) => {
   const getSinopsis = element.find("div.entry-content").first();
   obj.synopsis = $(getSinopsis).find("p").text().trim();
 
-  element.find('#chapterlist > ul > li').each((index, el) => {
+  $('#chapterlist > ul')
+  .find('li')
+  .each((index, el) => {
     let chapter_title = $(el).find("div.eph-num > a").text()
     let chapter_endpoint = $(el).find("div.eph-num > a").attr("href")
     if(chapter_endpoint !== undefined){
