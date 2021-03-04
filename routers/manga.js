@@ -97,4 +97,41 @@ router.get("/manga/detail/:slug", async (req, res) => {
   }
 });
 
+//recommended ---done---
+router.get("/recommended", async (req, res) => {
+  try {
+    const response = await AxiosService('other/hot/');
+
+    const $ = cheerio.load(response.data);
+    const element = $("div.hotslid");
+    let manga_list = [];
+    let type, title, chapter, rating, endpoint, thumb;
+    element.each((idx, el) => {
+      title = $(el).find("bsx > a").attr("title");
+      thumb = $(el).find("div.limit > img").attr("src");
+      endpoint = $(el).find("bsx > a").attr('href')
+        .replace('/manga/', "").replace(replaceMangaPage,'');
+      rating = $(el).find("div.numscore").text();
+      chapter = $(el).find("div.epxs").text();
+      manga_list.push({
+        title,
+        chapter,
+        type,
+        thumb,
+        endpoint,
+        rating,
+      });
+    });
+    return res.json({
+      status: true,
+      message: "success",
+      manga_list,
+    });
+  } catch (error) {
+    res.send({
+      message: error.message,
+    });
+  }
+});
+
 module.exports = router;
