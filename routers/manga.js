@@ -49,7 +49,7 @@ router.get("/search/:query", async (req, res) => {
 router.get("/manga/detail/:slug", async (req, res) => {
   const slug = req.params.slug;
   try {
-    const response = await AxiosService("manga/"+slug);
+  const response = await AxiosService("manga/"+slug);
   const $ = cheerio.load(response.data);
   const element = $("div.postbody");
   let genre_list = [];
@@ -81,25 +81,25 @@ router.get("/manga/detail/:slug", async (req, res) => {
     });
   });
 
-  obj.genre_list = genre_list||[];
+  obj.genre_list = genre_list;
 
   /* Get Synopsis */
   const getSinopsis = element.find("div.entry-content").first();
   obj.synopsis = $(getSinopsis).find("p").text().trim();
 
-  $('div.eplister')
-    .find("li").each((index, el) => {
-      let chapter_title = $(el).find("span.chapternum").text()
-      let chapter_endpoint = $(el).find("div.eph-num > a").attr("href")
-      if(chapter_endpoint !== undefined){
-        const rep = chapter_endpoint.replace('https://westmanga.info/','')
+  element.find('#chapterlist > ul > li').each((index, el) => {
+    let chapter_title = $(el).find("div.eph-num > a").text()
+    let chapter_endpoint = $(el).find("div.eph-num > a").attr("href")
+    if(chapter_endpoint !== undefined){
+      const rep = chapter_endpoint.replace('https://westmanga.info/','')
         chapter.push({
           chapter_title,
           chapter_endpoint:rep,
         }); 
       }
-      obj.chapter = chapter;
     });
+
+    obj.chapter = chapter;
 
   res.status(200).send(obj);
   } catch (error) {
