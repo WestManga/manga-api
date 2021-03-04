@@ -13,24 +13,24 @@ router.get("/:slug", async (req, res) => {
   const slug = req.params.slug;
   try {
     //response
-    const response = await AxiosService(`ch/${slug}`);
+    const response = await AxiosService(`/${slug}`);
     const $ = cheerio.load(response.data);
-    const content = $("#article");
+    const content = $("div.postarea");
     let chapter_image = [];
     const obj = {};
     obj.chapter_endpoint = slug + "/";
 
-    const getTitlePages = content.find(".dsk2")
+    const getTitlePages = content.find("div.entry-title")
     getTitlePages.filter(() => {
       obj.title = $(getTitlePages).find("h1").text().replace("Komik ", "");
     });
     // obj.download_link = link;
 
-    const getPages = $('#Baca_Komik > img')
+    const getPages = $('div.readerarea > img')
     obj.chapter_pages = getPages.length;
     getPages.each((i, el) => {
       chapter_image.push({
-        chapter_image_link: $(el).attr("src").replace('i0.wp.com/',''),
+        chapter_image_link: $(el).attr("src").replace('i1.wp.com/',''),
         image_number: i + 1,
       });
     });
