@@ -74,8 +74,8 @@ router.get("/manga/detail/:slug", async (req, res) => {
   /* Get Manga Thumbnail */
   obj.thumb = element.find("div.thumb > img").attr("src");
 
-  $('div.seriestucon > div.seriestucontent > div.seriestucontentr > div.seriestucont > div.seriestugenre')
-  .find('a')
+  $('div.seriestucon > div.seriestucontent > div.seriestucontentr > div.seriestucont')
+  .find('div.seriestugenre')
   .each((index, el) => {
     let genre_name = $(el).find("a").text()
     let genre_link = $(el).find("a").attr("href")
