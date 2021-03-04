@@ -97,40 +97,51 @@ router.get("/manga/detail/:slug", async (req, res) => {
   }
 });
 
-//recommended ---done---
-router.get("/recommended", async (req, res) => {
-  try {
-    const response = await AxiosService('https://westmanga.info/');
+//rekomendasi  -------Done------
+router.get("/recomended", async (req, res) => {
+  let url = 'https://westmanga.info/'
 
-    const $ = cheerio.load(response.data);
-    const element = $("div.hotslid");
-    let manga_list = [];
-    let type, title, chapter, rating, endpoint, thumb;
-    element.each((idx, el) => {
-      title = $(el).find("div.bsx > a").attr("title");
-      thumb = $(el).find("div.limit > img").attr("src");
-      endpoint = $(el).find("div.bsx > a").attr('href').replace(replaceMangaPage, "").replace('/manga/','');
-      rating = $(el).find("div.numscore").text();
-      chapter = $(el).find("div.epxs").text();
-      manga_list.push({
-        title,
-        chapter,
-        type,
-        thumb,
-        endpoint,
-        rating,
+  try {
+    const response = await AxiosService(url);
+    console.log(url);
+    if (response.status === 200) {
+      const $ = cheerio.load(response.data);
+      const element = $("div.hotslid");
+      let manga_list = [];
+      let title, chapter, rating, endpoint, thumb;
+
+      element.find("div.hotslid").each((idx, el) => {
+        title = $(el).find("div.bsx > a").attr("title").text().trim();
+        endpoint = $(el).find("div.bsx > a").attr("href").replace(replaceMangaPage, "").replace('/manga/','');
+        thumb = $(el).find("div.limit > img").find("img").attr("src");
+        rating = $(el).find("div.numscore").text().trim();
+        chapter = $(el).find("div.epxs").text();
+        manga_list.push({
+          title,
+          thumb,
+          type,
+          rating,
+          endpoint,
+          chapter,
+        });
       });
+      return res.status(200).json({
+        status: true,
+        message: "success",
+        manga_list,
+      });
+    }
+    return res.send({
+      message: response.status,
+      manga_list: [],
     });
-    return res.json({
-      status: true,
-      message: "success",
-      manga_list,
-    });
-  } catch (error) {
+  } catch (err) {
     res.send({
-      message: error.message,
+      status: false,
+      message: err,
+      manga_list: [],
     });
   }
-});
+})
 
 module.exports = router;
