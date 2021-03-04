@@ -13,7 +13,7 @@ router.get("/:slug", async (req, res) => {
   const slug = req.params.slug;
   try {
     //response
-    const response = await AxiosService(`/${slug}`);
+    const response = await AxiosService(`https://westmanga.com/manga/${slug}`);
     const $ = cheerio.load(response.data);
     const content = $("div.postarea");
     let chapter_image = [];
