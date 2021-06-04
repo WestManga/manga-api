@@ -29,6 +29,7 @@ router.get("/today/:query", async (req, res) => {
     obj.cinta = element.find('#horo_content > div:nth-child(2)').find("p").text().trim();
     obj.keuangan = element.find('#horo_content > div:nth-child(5)').find("p").text().trim();
     obj.pekerjaan = element.find('#horo_content > div:nth-child(6)').find("p").text().trim();
+    obj.last_update = $('#stm').text();
 
     res.status(200).send(obj);
   } catch (error) {
