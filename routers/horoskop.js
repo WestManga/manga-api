@@ -1,39 +1,34 @@
 const router = require("express").Router();
 const cheerio = require("cheerio");
-const AxiosService = require("../helpers/ramalanService");
+const ramalanService = require("../helpers/ramalanService");
 
 // manga popular ----Ignore this for now --------
-router.get("/ramalan-bintang/hari-ini/", async (req, res) => {
+router.get("/", async (req, res) => {
   res.send({
-    message: "nothing",
+    message: "HOLAAAAAAAAAAAAAAAA",
   });
 });
 
 //serach manga ------Done-----------
-router.get("/horoskop/hari-ini/:query", async (req, res) => {
+router.get("/today/:query", async (req, res) => {
   const query = req.params.query;
   const url = `https://www.ramalan-harian.com/ramalan-bintang/hari-ini/${query}.htm`;
   // belom
   try {
-    const response = await AxiosService(url);
+    const response = await ramalanService(url);
     const $ = cheerio.load(response.data);
-    const element = $(".main_content");
-    let horoskop_today = [];
+    const element = $("#content");
     const obj = {};
 
     /* Get Title, Type, Author, Status */
-    const getMeta = element.find("#horo_intro").first();
-    obj.title = $(getMeta).find("h2").text().trim().replace("Iklim astral Anda", "");
+    obj.title = $('#breadcrumbs > a:nth-child(4)').text();
     obj.intro = $('#horo_intro').find("p").text().trim();
 
-    /* Kelucuan */
-    element.find('#horo_content').each((idx, el) => {
-      let judul_horoskop = $(el).find("h3").text.trim();
-      let isi_horoskop = $(el).find("p").text.trim();
-      horoskop_today.push({
-        judul_horoskop,isi_horoskop,
-      })
-    })
+    /* Isi */
+    obj.keseharian = element.find('#horo_content > div:nth-child(1)').find("p").text().trim();
+    obj.cinta = element.find('#horo_content > div:nth-child(2)').find("p").text().trim();
+    obj.keuangan = element.find('#horo_content > div:nth-child(5)').find("p").text().trim();
+    obj.pekerjaan = element.find('#horo_content > div:nth-child(6)').find("p").text().trim();
 
     res.status(200).send(obj);
   } catch (error) {

@@ -13,11 +13,10 @@ const tunnelAgent = tunnel.httpsOverHttp({
 });
 axios.defaults.baseURL = baseUrl;
 axios.default.httpsAgent = tunnelAgent;
-axios.default.CookieJar = cookiejar;
 // axios.defaults.httpsAgent = tunnelAgent;
 // axios.defaults.jar = cookiejar;
 
-const AxiosService = async (url) => {
+const ramalanService = async (url) => {
   return new Promise(async (resolve, reject) => {
     const _url = url == null?url:encodeURI(url);
     try {
@@ -31,4 +30,4 @@ const AxiosService = async (url) => {
     }
   });
 };
-module.exports = AxiosService;
+module.exports = ramalanService;
