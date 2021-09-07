@@ -6,9 +6,38 @@ const AxiosService = require("../helpers/axiosService");
 
 // manga popular ----Ignore this for now --------
 router.get("/manga/popular", async (req, res) => {
-  res.send({
-    message: "nothing",
-  });
+  const url = baseUrl;
+  try {
+    const response = await AxiosService(url);
+    const $ = cheerio.load(response.data);
+    const element = $("div.hotslid");
+    let manga_list = [];
+    let title, thumb, endpoint ;
+    element.find("div.bsx").each((idx, el) => {
+      endpoint = $(el).find("a").attr("href").replace(replaceMangaPage, "").replace('/manga/','');
+      thumb = $(el).find("div.bsx > a > div.limit > img").attr("src");
+      title = $(el).find("a").attr("title");
+      last_chapter = $(el).find("div.bigor > div.adds > div.epxs").text();
+      rating = $(el).find("div.bigor > div.adds > div.rt > div > div.numscore").text();
+      manga_list.push({
+        title,
+        thumb,
+        last_chapter,
+        rating,
+        endpoint,
+      });
+    });
+    res.json({
+      status: true,
+      message: "success",
+      manga_list
+    });
+  } catch (error) {
+    res.send({
+      status: false,
+      message: error.message,
+    });
+  }
 });
 
 //serach manga ------Done-----------
