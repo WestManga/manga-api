@@ -4,7 +4,7 @@ const baseUrl = require("../constants/urls");
 const replaceMangaPage = "https://westmanga.info/manga/";
 const AxiosService = require("../helpers/axiosService");
 
-// manga popular ----Ignore this for now --------
+// manga popular
 router.get("/manga/popular", async (req, res) => {
   const url = baseUrl;
   try {
@@ -24,6 +24,42 @@ router.get("/manga/popular", async (req, res) => {
         thumb,
         last_chapter,
         rating,
+        endpoint,
+      });
+    });
+    res.json({
+      status: true,
+      message: "success",
+      manga_list
+    });
+  } catch (error) {
+    res.send({
+      status: false,
+      message: error.message,
+    });
+  }
+});
+
+// manga wm new update
+router.get("/manga/newupdate", async (req, res) => {
+  const url = baseUrl;
+  try {
+    const response = await AxiosService(url);
+    const $ = cheerio.load(response.data);
+    const element = $("#content > div.wrapper > div.postbody > div:nth-child(1) > div.listupd");
+    let manga_list = [];
+    let title, thumb, endpoint ;
+    element.find("div.bsx").each((idx, el) => {
+      endpoint = $(el).find("a").attr("href").replace(replaceMangaPage, "").replace('/manga/','');
+      thumb = $(el).find("div.bsx > a > div.limit > img").attr("src");
+      title = $(el).find("a").attr("title");
+      update_on = $(el).find("div.adds > div.epxdate").text();
+      chapter = $(el).find("div.adds > a > div.epxs").text();
+      manga_list.push({
+        title,
+        thumb,
+        update_on,
+        chapter,
         endpoint,
       });
     });
